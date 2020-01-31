@@ -1,0 +1,435 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en"><head>
+
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <style type="text/css"> 
+    
+      body { font-family: Arial,Helvetica,sans-serif; font-size:10pt;                                                        
+      color: #000; background: #FFF;
+      margin:0 auto; width: 720px; }                                                                                                    
+      td   { font-size:10pt; }                                                                                                                   
+      a:link    { color: #000; }                                                                                                                 
+      a:visited { color: #000; }                                                                                                                 
+      a:active  { color: #FFF; }                                                                                                                 
+      p.id {font-size: x-small; text-align: right;}
+      table.bigheader{ height: 39pt; } 
+      @media print {                                                                                                                             
+      * { color: black !important;                                                                                                              
+      border-color: black !important;                                                                                                       
+      background: white !important; }                                                                                                       
+      .noprint { display: none !important; }
+      }
+    
+    </style>      
+    <title>Assessed Exercise 2</title>
+  </head><body>
+
+    <br>
+    
+    <table class="bigheader" id="Header" align="center" bgcolor="#b9dde9" border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tbody><tr bgcolor="#99CCFF"> 
+	  <td>&nbsp;&nbsp;</td><td><font color="white" face="Arial,
+	  Helvetica, sans-serif" size="5"><strong>Assessed Exercise 2</strong></font></td>
+	</tr>
+      </tbody>
+    </table>
+
+<br>
+
+    <table align="center" width="80%">
+      <tbody><tr><td>
+
+<p style="text-align: justify;"><b>Introduction.</b>  Here is the
+second (of two) assessed exercises. It consists of three tasks. 
+
+<ul>
+
+
+  <li> <b>Task 1</b> (worth 40%) is  <a href="task1/index.html">here</a>.
+  <li> <b>Task 2</b> (worth 45%) is  <a href="task2/index.html">here</a>.
+  <li> <b>Task 3</b> (worth 15%) is  <a href="task3/index.html">here</a>.
+
+</ul>
+
+<p> <b>When and how to submit.</b> The first assessed exercise is due
+  <font color=red>Friday 15 December 2017, at 18:00</font>. To assure
+  anonymity, please submit via the course's Study Direct page, where I
+  will set up a submission link.  For submission guidelines
+  see <a href="guidelines.html">here.</a></p>
+
+
+<hr>
+
+
+<p style="text-align: justify;">
+  Your task is to implement, in Java, code generators. As source
+  language we take subsets of (a minor variant of) the simple language
+  that we generated code for in the lectures (see
+  the <a href="http://www.sussex.ac.uk/Users/mfb21/compilers/slides/12.pdf">lecture
+  notes</a>, Page 4).  As usual, the language is represented by
+  ASTs. The target language is MIPS machine code.
+</p>
+
+
+<p style="text-align: justify;"><b>Background.</b> It might be
+interesting to see the language you will have to compile in it's
+conventional (non-AST) form. Here it is as a context free grammar.
+</p>
+
+<blockquote>
+<pre>
+PROG &rarr; DEC | DEC; PROG 
+DEC &rarr; def ID (VARDEC) = E
+VARDEC &rarr;  &epsilon; | VARDECNE 
+VARDECNE &rarr; ID | VARDECNE, ID 
+ID &rarr; ... (identifiers)
+INT &rarr; ... (Integers)
+E &rarr;  INT 
+  | ID 
+  | if E COMP E then E else E endif
+  | (E BINOP E)
+  | (E)
+  | skip
+  | (E; E)
+  | while E COMP E do E endwhile
+  | repeat E until E COMP E endrepeat
+  | ID := E
+  | ID(ARGS)
+  | break
+  | continue
+ARGS &rarr; &epsilon; | ARGSNE
+ARGSNE &rarr; E | ARGSNE, E
+COMP &rarr; == | < | > | <= | >=
+BINOP &rarr; + | - | * | / 
+</pre>
+</blockquote>
+
+<p style="text-align: justify;">
+  The ASTs for this language can be found <a href="common/asts.java">here</a>.
+<font color=red>Do note change these definitions at all!
+(except by adding new methods). If you change them in a way that my
+  test suite will not compile, you will get 0 points.</font>
+</p>
+
+<p style="text-align: justify;">An important difference from the
+pseudo-code used in the lectures is that in declarations we use
+numbers as variables (instead of strings).  Variable 1 refers to the
+first (leftmost) variable in the declaration, variable 2 to the second
+from the left and so on.  For example the procedure</p>
+
+<blockquote>
+def f(x,y,z) = { if x == y then z else 0 }
+</blockquote>
+becomes
+
+<blockquote>
+<pre>
+Declaration ( "f", 
+              3, 
+              new If ( new Variable ( 1 ), 
+                       new Equals (),
+                       new Variable( 2 ),
+                       new Variable( 3 ),
+                       new IntLiteral ( 0 ) ) );
+</pre>
+</blockquote>
+
+
+<p style="text-align: justify;">
+  The meaning of <code>break</code> and <code>continue</code> will be explained in
+  <a href="task3/index.html">Task 3</a>.  Note that you don't have to
+write a lexer or parser for this language, only a code generator. All
+your code generators will use the following given classes.
+</p>
+
+<p style="text-align: justify;">
+  <b>Notes on the implementations.</b>  It is your task to implement
+the code generators in Java. You will have to use the following interface and
+exception to implement the code generators.
+</p>
+
+<blockquote>
+<pre>
+class CodegenException extends Exception {
+    public String msg;
+    public CodegenException ( String _msg ) { msg = _msg; } }
+
+interface Codegen {
+    public String codegen ( Program p ) throws CodegenException; }
+</pre>
+</blockquote>
+
+
+
+<p style="text-align: justify;">
+The MIPS code to be produced is returned by all these methods as a
+string. Don't print out the generated code. Just return it as a
+string.
+</p>
+
+<p style="text-align: justify;">You can download
+these <a href="common/basic.java">here</a>. <font color=red>Do note
+change these definitions at all!</font> If you change them, my test
+suite will not compile and you will get 0 points. I will instantiate
+your code generators with the following classes, one for each
+task.</p>
+
+<blockquote>
+<pre>
+  class Task1 {
+     public static Codegen create () throws CodegenException { ... } }
+  
+  class Task2 {
+     public static Codegen create () throws CodegenException { ... } }
+  
+  class Task3 {
+     public static Codegen create () throws CodegenException { ... } }
+</pre>
+</blockquote>
+
+<p style="text-align: justify;">(You find these three code fragments
+  <a href="common/codegen1.java">here</a>,
+  <a href="common/codegen2.java">here</a> and
+  <a href="common/codegen3.java">here</a>.) To implement e.g. Task 1, replace
+  the <code>...</code>  with appropriate code that instantiates
+  the <code>Codegen</code> interface. If you don't want to do a task,
+  just throw a <code>CodegenException</code> exceptions
+  in <code>create</code> instead.</p>
+
+
+<p style="text-align: justify;"> The
+ <code>codegen</code> method is intended to generate code for a whole
+ <code>p</code> of type <code>Program</code>.  The code generated for
+ a whole program <code>p</code> includes preamble, data layout
+ directives etc. The generated code should be valid and executable
+ MIPS code.  You need to add alignment instructions and ensure that
+ upon start of your program control is handed to the initial program,
+ and upon termination control is handed back.</p>
+
+<p style="text-align: justify;">
+The code generators for Task 1 and Task 2 work only on subsets of the
+language.  The test suite I will use for Task 1 will only use ASTs
+that are valid programs in the subset of Task 1.  The test suite I
+will use for Task 2 will only use ASTs that are valid programs in the
+subset of Task 2. So it doesn't matter what your code generators for
+these tasks do when they encounter ASTs that are not valid in the
+relevant subsets. For example if you do Task 1 and 2, it makes sense
+to write a code generator for Task 2, and then
+let <code>Task1.create</code> as well as <code>Task2.create</code>
+ return the same code generator.
+</p>
+
+<p style="text-align: justify;">The generated code must do the following.</p>
+
+<ul>
+
+<li> Be syntactically correct, meaning is must compiler.
+  
+<li> Generate syntactically correct code, meaning generated code must
+  run in the MARS emulator.
+
+
+<li> Implement the accumulator machine described in the lectures. You should use
+  <code>$a0</code> as accumulator. The final result of the program
+  should also be in <code>$a0</code>.  If you don't want to implement
+  an accumulator machine, then please contact me beforehand and
+  discuss this matter with me.
+
+<li> Implement the meaning of the program correctly, i.e. 4+4 must evaluate
+to 8 and so on.
+
+<li> Should not lead to an error when being executed, e.g. due to memory
+misalignment.
+
+<li> Integers should be mapped to MIPS 32 bit integers, as described in the
+lectures.  Note that you don't have to care about integer
+overflow. All integers occurring in test-data will be sufficiently
+small to avoid overflow.
+
+</ul>
+
+
+<p style="text-align: justify;">
+You can assume that each program that I use to test your submission
+definition defines at least one procedure.  You can also assume that
+all declarations in a program have distinct names.  All programs are
+valid, e.g. contain no type errors.  Moreover, the first declaration
+in the declaration list of a program takes 0 arguments.  This first
+declaration is to be executed first, i.e. it is the procedure that
+should be executed when control is handed over to the code your code
+generator produces. Note that the first procedure does <b>not</b> have
+to be called <code>main</code>.</p>
+
+<p style="text-align: justify;">
+  Note that the test suite will call the <code>codegen</code>
+  multiple times on the same object of type <code>Codegen</code>.
+</p>
+
+
+<p style="text-align: justify;"> Use the
+provided <code>CodegenException</code> to signal errors or problems in
+your code generator. Do not use other means of signalling errors. In
+particular, please don't abort the program if you encounter a
+problem.</p>
+
+
+<p style="text-align: justify;"><b>How to avoid common mistakes.</b>
+Here is a list of suggestions that help you avoid common mistakes, all
+  of which I've seen in plenty of submission last year:</p>
+
+<ul>
+
+
+<li> You'll need a function that generates fresh labels. Don't hardcode
+  labels, ensure that the function generates a fresh label every time
+  it is called. Don't use a random generator for this, use a
+  global/static variable for this purpose. This is one of the few
+  legitimate uses of global/static variables.
+
+<li> If your sumission for the first assessed CW suffered from problems
+  related to using instance variables where you should have used
+  method-specific variables, ensure that you don't make this mistake
+  again.
+
+<li> The MIPS assumbly your submission needs to generate a string, which
+  each new assembly command being on a new line. It's easy to forget a
+  "\n" here or there, if you add them 'by hand'.  Hint: don't put them
+  in by hand. Have your code generator generate an auxiliary list (or
+  similar) of MIPS commands and then transform this into a string
+  where the "\n" are automatically added. 
+
+<li> Check that your submission is not miscompiling conditionals like
+  <code>if</code>/<code>then</code>/<code>else</code> or loops in the
+  sense that if the condition evaluates to <code>true</code> then
+  the <code>else</code>-branch is executed and vice versa.
+
+<li> Repeated implementations of the translation of conditionals: The
+  source language has several places where conditionals need to be
+  translated: <code>if</code>, <code>while</code>,
+  and <code>repeat</code>. I recommend not to repeat the code
+  generator for conditional three times, but have an auxiliary
+  function generating the code, and calling that auxiliary method
+  for <code>if</code>, <code>while</code>
+  and <code>repeat</code>. Note that the conditional for repeat is the
+  'other way round' in comparison with <code>while</code> so a joint
+  translation method would a way of handling the two different ways of
+  translating conditionals.
+
+<li> I suggest that you split your code generator into at least the
+  following three
+  methods: <code>codegenProg</code>, <code>codegenDecl</code> and 
+  <code>codegenExp</code> that translagte programs, declarations and
+  expressions, respectively. You are welcome to have more (e.g. for
+  comparison operations and arithmetic expressions).
+
+<li> I suggest to ensure that your submission isn't 'noisy', meaning what
+  you submit does not emit debug output: the problem with debug output
+  is that it might be interpreted as MIPS assembly which leads to
+  errors.
+
+<li>
+I strongly recommend testing your code before submission. Note that
+    cutting/pasting code into MARS is insufficient as test, because
+    that doesn't deal with the termination.
+
+</ul>
+
+<p style="text-align: justify;">
+  A small test suite that you can use will be made available
+   <a href="tester.html">here</a> a little later. Since I will
+  evaluate your submissions using a testing framework like the above,
+  it is vital that you keep the relevant class signatures intact.
+</p>
+
+
+
+<!-- <p> <b>When and how to submit.</b> The first assessed exercise is due -->
+<!--   <font color=red>Tuesday, 10 December at 16:00</font>. To assure -->
+<!--   anonymity, please submit via the course's Study Direct page, where I -->
+<!--   will set up a submission link. Submission format:</p> -->
+
+<!-- <ul> -->
+  
+<!--   <li> Please do not put your names on your submissions, -->
+<!--     but do include your candidate number. -->
+    
+<!--   <li> Please put all your submissions programs into a single -->
+<!--     directory that has your candidate ID as name.  I will compile your -->
+<!--     submission that directory, and then running <code>javac -->
+<!--     *.java</code>. If I cannot compile a submission, it will receive 0 -->
+<!--     points. -->
+    
+<!--   <li> Please zip-archive or tar your submissions, containing -->
+<!--     everything you want to submit. Submit only that archive as one -->
+<!--     file. The name of your submitted file should contain your -->
+<!--     candidate number, e.g. <code>23472.zip</code> -->
+<!--     or <code>43923.tar</code>. Before you -->
+<!--     submit, please check that your archives can be extracted. -->
+
+<!--   <li> Your submissions should -->
+<!--     <i>not</i> define a class <code>Main</code> -->
+<!--      (or <code>main</code>).  More generally, you should not submit -->
+<!--      any classes that define a <code>public static void -->
+<!--      main(...)</code> method.  This is because my testing framework -->
+<!--      will supply a <code>Main</code> class with a <code>public static -->
+<!--      void main(...)</code> method to execute tests of your code. -->
+
+<!--   <li> -->
+<!--     Eclipse and other IDEs use different directory layouts, so if you -->
+<!--     use Eclipse and the like, you will have to adapt the directory -->
+<!--     structure to the submission requirements. -->
+
+<!--   <li> If you use an IDE such as Eclipse or BlueJ, please make double -->
+<!--     sure that your submission is in the right format.  Some IDEs -->
+<!--     (e.g. BlueJ) may generate files with dependencies that I cannot -->
+<!--     resolve as I don't have the relevant libraries, but that are -->
+<!--     automatically resolved when using that IDE. -->
+
+<!--   <li> You will have to use the code templates given to you. Do not -->
+<!--       change the names and signatures of classes and methods given to -->
+<!--       you. Of course you may extend classes, create new classes, -->
+<!--       instantiate interfaces etc. But a program that is compiled -->
+<!--       against the Java fragments you've been given as part of the -->
+<!--       tasks should remain compilable with your modifications and -->
+<!--       additions. -->
+
+<!--   <li> I will run the tests using Java 7 (more precisely Java version -->
+<!--     "1.7.0_25"). If you are planning to use Java features that are not -->
+<!--     available in Java 7, please contact me. -->
+
+<!--   <li> If you want to implement only parts of the tasks, you can throw a -->
+<!--     suitable exception to instead of providing an implementation. -->
+
+<!--   <li> Use the exception classes provided with the respective tasks to -->
+<!--     signal that something went wrong. Do not signal errors in other ways. -->
+
+<!--   <li> Please do not use Java's <code>package</code> construct. I know -->
+<!--     that it is good Java style to use <code>package</code>, but using -->
+<!--     it makes evaluating your submissions more difficult for me. -->
+    
+<!--   <li> To assure anonymity, do not put your names anywhere in your -->
+<!--     submissions, but do include your candidate number somewhere, -->
+<!--     preferably as the name of the submitted file. -->
+    
+<!-- </ul> -->
+
+<!-- <hr> -->
+
+<!-- <p style="text-align: justify;"><b>Originality and plagiarism.</b> -->
+<!-- Please don’t forget that the work submitted must be your own. For -->
+<!-- example, it is completely unacceptable for two or more students to -->
+<!-- collaborate on a program up to the point where it is typed into the -->
+<!-- system. You may discuss the designs of your programs with each other -->
+<!-- in broad outline, but discussions at the level of program statements -->
+<!-- are clearly unacceptable.  If you have not done so already, you would -->
+<!-- be well advised to consult the University of Sussex Handbook for -->
+<!-- Candidates on the subjects of collusion and plagiarism: -->
+<!-- see <a href="http://www.sussex.ac.uk/academicoffice/resources/misconduct">here</a>. -->
+<!-- </p> -->
+
+<hr>
+
+
+    </td></tr></tbody></table>
+
+</body></html>

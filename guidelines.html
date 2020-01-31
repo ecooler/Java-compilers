@@ -1,0 +1,159 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en"><head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Compilers and Computer Architecture (G5035)</title>
+ <style type="text/css">                                                                                                                      
+   <!--                                                                                                                                        
+    body { font-family: Arial,Helvetica,sans-serif; font-size:10pt;                                                                            
+           color: #000; background: #FFF;
+	   margin:0 auto; width: 720px; }                                                                                                    
+    td   { font-size:10pt; }                                                                                                                   
+    a:link    { color: #000; }                                                                                                                 
+    a:visited { color: #000; }                                                                                                                 
+    a:active  { color: #FFF; }                                                                                                                 
+    @media print {                                                                                                                             
+     * { color: black !important;                                                                                                              
+         border-color: black !important;                                                                                                       
+         background: white !important; }                                                                                                       
+     .noprint { display: none !important; }                                                                                                    
+    }                                                                                                                                          
+   -->                                                                                                                                         
+span.invisible
+{
+   display: none
+}
+
+  </style>      
+</head><body style="background-image: url(netpic2.jpg); background-repeat: no-repeat; background-position: right top;">
+
+<br>
+
+
+<h2>Compilers and Computer Architecture (G5035)</h2>
+<hr>
+    
+<table align="center" width="90%">
+  <tbody><tr><td>
+			        
+<p style="text-align: justify;">
+  <b>Submission guidelines.</b> Here are some recommendations for your
+submission.  Your code should have the following properties.</p>
+
+<ul>
+  
+  <li> To assure anonymity, do not put your names anywhere in your
+    submissions, but do include your candidate number somewhere,
+    preferably as the name of the submitted file.
+
+  <li> Please make sure your submission isn't 'noisy'. In other words,
+    when I run you code, it should not output debugging information.
+    (Maybe look at all your <code>System.out.println (...)</code>
+    statements: are they really needed?)
+    
+  <li> Please make sure the code you submit can be compiled by
+  invoking
+    <code>javac *.java</code>. In particular, you'll have to include
+    the interface definitions that you have been
+    given.  <font color=red>Code that cannot be compiled will receive
+    0 points.</font>
+
+  <li> You will have to use the code templates given to you. Do not
+      change the names and signatures of classes and methods given to
+      you. Of course you may extend classes, create new classes,
+      instantiate interfaces etc. But a program that is compiled
+      against the Java fragments you've been given as part of the
+      tasks should remain compilable with your modifications and
+      additions.
+
+  <li> Note that classes you submit might be instantiated multiple
+    times, and methods might get invoked more than once.  They should
+    behave appropriately when used multiple times.
+
+  <li> If your code encounters a problem, do throw one of the
+exceptions defined in the tasks with an appropriate error message. Do
+not throw other exceptions and don't exit the program (i.e. don't
+use <code>System.exit( ... )</code> and the like).
+
+  <li> Please put the submissions for each task into separate
+    directories (called <code>task1</code>, <code>task2</code>,
+    and <code>task3</code>). Each directory should
+    contain <font color=red>all files</font> relevant for the task, in
+    particular for compilation (where that makes sense).  I will
+    compile e.g. your submission for Task 2 by going to
+    directory <code>task2</code>, and then running <code>javac
+    *.java</code>. <font color=red>Code does not adhere to this format
+    will receive 0 points.</font> Please compile each task yourself
+    before submission using <code>javac *.java</code> to ensure that
+    your submission is compilable.
+
+  <li> If you don't want to submit a solution for a task, omit the
+  directory for that task.
+
+  <li> Please put your whole submission into a single directory that
+    has your candidate ID as name. This single directory will then
+    have sub-directories <code>task1</code>, <code>task2</code>
+    and <code>task3</code>.
+    
+  <li> Please zip-archive or tar your submissions, containing
+    everything you want to submit. Submit only that archive as one
+    file. The name of your submitted file should contain your
+    candidate number, e.g. <code>23472.zip</code>
+    or <code>43923.tar</code>. Before you
+    submit, please check that your archives can be extracted.
+    Do 
+    <b>not</b> use <code>rar</code> to make your submission into one
+    file: <code>rar</code> cannot be reliably un-<code>rar</code>ed on
+    OSX and Linux.
+
+
+  <li> Your submissions should
+    <i>not</i> define a class <code>Main</code>
+     (or <code>main</code>).  More generally, you should not submit
+     any classes that define a <code>public static void
+     main(...)</code> method.  This is because my testing framework
+     will supply a <code>Main</code> class with a <code>public static
+     void main(...)</code> method to execute tests of your code.
+
+  <li>
+    Eclipse and other IDEs use different directory layouts, so if you
+    use Eclipse and the like, you will have to adapt the directory
+    structure to the submission requirements.
+
+  <li> If you use an IDE such as Eclipse or BlueJ, please make double
+    sure that your submission is in the right format.  Some IDEs
+    (e.g. BlueJ) may generate files with dependencies that I cannot
+    resolve as I don't have the relevant libraries, but that are
+    automatically resolved when using that IDE.
+
+
+  <li> I will run the tests using Java 8 (more precisely Java version
+    "javac 1.8.0_31"). If you are planning to use Java features that are not
+    available in Java 8, please contact me.
+
+  <li> Please do not use Java's <code>package</code> construct. I know
+    that it is good Java style to use <code>package</code>, but using
+    it makes evaluating your submissions more difficult for me.
+        
+</ul>
+
+<hr>
+
+<p style="text-align: justify;"><b>Originality and plagiarism.</b>
+Please don’t forget that the work submitted must be your own. For
+example, it is completely unacceptable for two or more students to
+collaborate on a program up to the point where it is typed into the
+system. You may discuss the designs of your programs with each other
+in broad outline, but discussions at the level of program statements
+are clearly unacceptable.  If you have not done so already, you would
+be well advised to consult the University of Sussex Handbook
+guidelines on the subjects of collusion and plagiarism:
+see <a href="http://www.sussex.ac.uk/s3/?id=35">here</a>.
+</p>
+
+<hr>
+
+
+    </td></tr></tbody></table>
+
+</body></html>
